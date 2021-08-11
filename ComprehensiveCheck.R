@@ -1,6 +1,7 @@
 library(dslabs)
 library(dplyr)
 library(caret)
+library(purrr)
 library(lubridate)
 data(reported_heights)
 
@@ -39,12 +40,20 @@ min(train$Sepal.Length)
 max(train$Sepal.Length)
 sep_Len_cutoff<-seq(5,7.9,.1)
 ac_sep_len<-map_dbl(sep_Len_cutoff, function(x){
-  species_hat<-ifelse(train$Sepal.Length>x, "versicolor", "virginica")%>%factor(levels=levels(train$Species))
+  species_hat<-ifelse(train$Sepal.Length>x, "versicolor", "virginica")%>%
+    factor(levels = levels(y))
   mean(species_hat==train$Species)
 })
-max(ac_sep_len)
-max_ac_sep_len<-ifelse(train$Sepal.Length>.5, "versicolor", "virginica")%>%factor()
-confusionMatrix(data=max_ac_sep_len, reference=factor(train$Species, c("versicolor", "virginica")))
+data.frame(sep_Len_cutoff, ac_sep_len) %>% 
+  ggplot(aes(sep_Len_cutoff, ac_sep_len)) + 
+  geom_point() + 
+  geom_line() 
 
-#test Git
+best_sep_Len_cutoff<-sep_Len_cutoff[which.max(ac_sep_len)]
+(max(ac_sep_len))
+max_ac_sep_len<-ifelse(train$Sepal.Length>best_sep_Len_cutoff, "versicolor", "virginica")%>%
+  factor(levels=levels(y))
+confusionMatrix(data=max_ac_sep_len, reference=train$Species)
+
+
                 

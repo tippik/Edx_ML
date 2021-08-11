@@ -129,7 +129,7 @@ map_df(cutoffs, function(x){
   ggplot(aes(FPR, TPR, label = cutoff)) +
   geom_line() +
   geom_point() +
-  geom_text_repel(nudge_x = 0.01, nudge_y = -0.01)
+  geom_text_repel(nudge_x = 0.01, nudge_y = -0.01)  
 
 # plot precision against recall
 guessing <- map_df(probs, function(p){
