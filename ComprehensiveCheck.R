@@ -35,24 +35,26 @@ set.seed(2, sample.kind="Rounding") # if using R 3.6 or later
 # line of 
 test_index <- createDataPartition(y,times=1,p=0.5,list=FALSE)
 test <- iris[test_index,]
-train <- iris[-test_index,]
-min(train$Sepal.Length) 
-max(train$Sepal.Length)
-sep_Len_cutoff<-seq(5,7.9,.1)
-ac_sep_len<-map_dbl(sep_Len_cutoff, function(x){
-  species_hat<-ifelse(train$Sepal.Length>x, "versicolor", "virginica")%>%
+min(train$Petal.Width) 
+max(train$Petal.Width)
+pet_wid_cutoff<-seq(min(train$Petal.Width),max(train$Petal.Width),.1)
+ac_pet_wid<-map_dbl(pet_wid_cutoff, function(x){
+  species_hat<-ifelse(train$Petal.Width>x, "versicolor", "virginica")%>%
     factor(levels = levels(y))
   mean(species_hat==train$Species)
 })
-data.frame(sep_Len_cutoff, ac_sep_len) %>% 
-  ggplot(aes(sep_Len_cutoff, ac_sep_len)) + 
+data.frame(pet_wid_cutoff, ac_pet_wid) %>% 
+  ggplot(aes(pet_wid_cutoff, ac_pet_wid)) + 
   geom_point() + 
   geom_line() 
+best_pet_wid_cutoff<-pet_wid_cutoff[which.max(ac_pet_wid)]
+test_pet_wid<-map_dbl(pet_wid_cutoff, function(x){
+  species_hat<-ifelse(test$Petal.Width>best_pet_wid_cutoff, "versicolor", "virginica")%>%
+    factor(levels = levels(y))
+  mean(species_hat==test$Species)
+})
+(max(test_sep_wid))
 
-best_sep_Len_cutoff<-sep_Len_cutoff[which.max(ac_sep_len)]
-(max(ac_sep_len))
-max_ac_sep_len<-ifelse(train$Sepal.Length>best_sep_Len_cutoff, "versicolor", "virginica")%>%
-  factor(levels=levels(y))
 confusionMatrix(data=max_ac_sep_len, reference=train$Species)
 
 
