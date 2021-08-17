@@ -35,6 +35,7 @@ set.seed(2, sample.kind="Rounding") # if using R 3.6 or later
 # line of 
 test_index <- createDataPartition(y,times=1,p=0.5,list=FALSE)
 test <- iris[test_index,]
+train<-iris[-test_index,]
 min(train$Petal.Width) 
 max(train$Petal.Width)
 pet_wid_cutoff<-seq(min(train$Petal.Width),max(train$Petal.Width),.1)
